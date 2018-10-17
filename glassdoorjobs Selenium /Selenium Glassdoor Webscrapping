@@ -1,0 +1,51 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+import csv
+import re
+
+csv_file = open('reviews.csv', 'w', encoding='utf-8')
+writer = csv.writer(csv_file)
+
+for url in ny_page_1314_links:
+    try:
+        
+        driver = webdriver.Chrome()
+        driver.get(url)
+        wait_button = WebDriverWait(driver, 5)
+    
+        job_dict = {}
+    
+        job_description= driver.find_element_by_id('JobDescriptionContainer').text
+        job_dict['description'] = job_description
+
+
+        wait_button = WebDriverWait(driver, 20)
+        company_button = driver.find_element_by_xpath('//*[@id="JobDetailsInfo"]/div/header/ul/li[2]/span')
+        company_button.click()
+    
+        #salary = driver.find_element_by_xpath('//*[@id="salWrap"]/h2').text
+        industry = driver.find_element_by_xpath('//*[@id="EmpBasicInfo"]/div[1]/div/div[5]/span').text
+        sector = driver.find_element_by_xpath('//*[@id="EmpBasicInfo"]/div[1]/div/div[6]/span').text
+        location = driver.find_element_by_xpath('//*[@id="EmpBasicInfo"]/div[1]/div/div[1]/span').text
+        job_name = driver.find_element_by_xpath('//*[@id="HeroHeaderModule"]/div[3]/div[1]/div[2]/div[1]/h2').text
+        company_name = driver.find_element_by_xpath('//*[@id="HeroHeaderModule"]/div[3]/div[1]/div[2]/span[2]').text
+
+        #job_dict['salary'] = salary
+        job_dict['industry'] = industry
+        job_dict['sector'] = sector
+        job_dict['location'] = location
+        job_dict['job_name'] = job_name
+        job_dict['company_name'] = company_name
+    
+        writer.writerow(job_dict.values())
+    except Exception as e:
+        print (url)
+        print("=" * 50)
+        print(e)
+
+csv_file.close()
+driver.close()
+    #break
